@@ -84,7 +84,7 @@
 ### Option 1: Native Installation
 ```bash
 # 1. Clone repository
-git clone https://github.com/phantom/cerberus.git
+git clone https://github.com/boymirza-rejavaliyev/cerberus.git
 cd cerberus
 
 # 2. Install dependencies
@@ -166,6 +166,6 @@ This project is licensed under the [MIT License](LICENSE) - see the LICENSE file
 ## 🤝 Author & Contributions
 
 * **Author:** Boymirza Rejavaliyev
-* **GitHub:** [https://github.com/phantom](https://github.com/phantom)
+* **GitHub:** [https://github.com/boymirza-rejavaliyev](https://github.com/boymirza-rejavaliyev)
 * **Email:** boymirzarejavaliyev2003@gmail.com
 * Feedback, issues, and PR contributions are welcome!
