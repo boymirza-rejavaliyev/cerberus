@@ -1,0 +1,119 @@
+[
+  {
+    "id": "SEC-001",
+    "name": "Hardcoded AWS Access Key",
+    "severity": "CRITICAL",
+    "category": "Hardcoded Secrets",
+    "pattern": "AKIA[0-9A-Z]{16}",
+    "description": "Hardcoded AWS Access Key ID detected in source code.",
+    "remediation": "Move AWS credentials to environment variables or IAM roles."
+  },
+  {
+    "id": "SEC-002",
+    "name": "Hardcoded Private Key",
+    "severity": "CRITICAL",
+    "category": "Hardcoded Secrets",
+    "pattern": "-----BEGIN (?:RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----",
+    "description": "Plaintext private cryptographic key detected.",
+    "remediation": "Do not commit private keys to source control. Use a secret manager."
+  },
+  {
+    "id": "SEC-003",
+    "name": "Hardcoded Credentials in Connection URI",
+    "severity": "HIGH",
+    "category": "Hardcoded Secrets",
+    "pattern": "(?:mysql|postgresql|mongodb|redis):\\/\\/[a-zA-Z0-9_]+:[a-zA-Z0-9_!@#$%^&*()+=]+@",
+    "description": "Database connection string contains embedded username and password.",
+    "remediation": "Load database credentials from secure environment variables or vault."
+  },
+  {
+    "id": "SEC-004",
+    "name": "Hardcoded Secret / API Token Assignment",
+    "severity": "MEDIUM",
+    "category": "Hardcoded Secrets",
+    "pattern": "(?:api_key|secret_key|jwt_secret|auth_token)\\s*=\\s*['\"][a-zA-Z0-9_\\-\\.]{12,}['\"]",
+    "description": "Potential secret or API token hardcoded in a variable assignment.",
+    "remediation": "Store secret keys in .env files or a key vault service."
+  },
+  {
+    "id": "CMD-001",
+    "name": "Command Execution Sink",
+    "severity": "CRITICAL",
+    "category": "Command Injection",
+    "pattern": "\\b(system|exec|shell_exec|passthru|popen|proc_open)\\s*\\([^)]*\\$[a-zA-Z0-9_]+",
+    "description": "Dynamic variable passed directly into system command execution function.",
+    "remediation": "Avoid system execution functions. If unavoidable, sanitize with escapeshellarg()."
+  },
+  {
+    "id": "CMD-002",
+    "name": "Python Unsafe Subprocess Execution",
+    "severity": "HIGH",
+    "category": "Command Injection",
+    "pattern": "\\b(subprocess\\.Popen|subprocess\\.call|subprocess\\.run|os\\.system)\\s*\\([^)]*shell\\s*=\\s*True",
+    "description": "Subprocess called with shell=True which can lead to shell injection vulnerabilities.",
+    "remediation": "Set shell=False and pass arguments as a list of strings."
+  },
+  {
+    "id": "SQL-001",
+    "name": "SQL Query Execution with Variable",
+    "severity": "CRITICAL",
+    "category": "SQL Injection",
+    "pattern": "\\b(mysqli_query|mysql_query|pg_query|\\$pdo->query)\\s*\\([^)]*\\$[a-zA-Z0-9_]+",
+    "description": "SQL query function called with dynamic variable without prepared statements.",
+    "remediation": "Use PDO prepared statements with parameterized inputs."
+  },
+  {
+    "id": "SQL-002",
+    "name": "Python String-Formatted SQL Query",
+    "severity": "HIGH",
+    "category": "SQL Injection",
+    "pattern": "(?:cursor\\.execute|db\\.execute)\\s*\\(\\s*f[\"'].*?\\{.*?\\}.*?[\"']\\)",
+    "description": "SQL query dynamically formatted using Python f-strings without parameterization.",
+    "remediation": "Use parameterized queries, e.g., cursor.execute('SELECT * FROM users WHERE id = %s', (user_id,))."
+  },
+  {
+    "id": "DES-001",
+    "name": "PHP Insecure Deserialization",
+    "severity": "CRITICAL",
+    "category": "Insecure Deserialization",
+    "pattern": "\\bunserialize\\s*\\(\\s*\\$[a-zA-Z0-9_]+",
+    "description": "Unsanitized user input passed to unserialize() can result in Remote Code Execution.",
+    "remediation": "Use JSON (json_decode) instead of native PHP serialization for untrusted data."
+  },
+  {
+    "id": "DES-002",
+    "name": "Python Insecure Pickle Usage",
+    "severity": "HIGH",
+    "category": "Insecure Deserialization",
+    "pattern": "\\bpickle\\.(loads?|load)\\s*\\(",
+    "description": "Pickle serialization is not secure against erroneous or maliciously constructed data.",
+    "remediation": "Use safe serialization formats like JSON, MessagePack, or Protocol Buffers."
+  },
+  {
+    "id": "LFI-001",
+    "name": "Dynamic File Inclusion / Path Traversal",
+    "severity": "HIGH",
+    "category": "Path Traversal",
+    "pattern": "\\b(include|include_once|require|require_once|file_get_contents|readfile)\\s*\\(\\s*\\$[a-zA-Z0-9_]+",
+    "description": "File access or inclusion functions accept dynamic variables without sanitization.",
+    "remediation": "Use strict allowlists of file paths and enforce basename() validation."
+  },
+  {
+    "id": "XSS-001",
+    "name": "PHP Reflected XSS Direct Output",
+    "severity": "MEDIUM",
+    "category": "Cross-Site Scripting",
+    "pattern": "(?:echo|print)\\s+\\$_(GET|POST|REQUEST)\\[['\"].*?['\"]\\]",
+    "description": "Directly echoing HTTP request parameters into HTML output without sanitization.",
+    "remediation": "Sanitize with htmlspecialchars($var, ENT_QUOTES, 'UTF-8') before outputting."
+  },
+  {
+    "id": "CRY-001",
+    "name": "Weak Cryptographic Hash Function",
+    "severity": "LOW",
+    "category": "Weak Cryptography",
+    "pattern": "\\b(md5|sha1)\\s*\\(\\s*\\$(password|pass|pwd|secret)",
+    "description": "Obsolete hash algorithm (MD5/SHA1) used for password or secret hashing.",
+    "remediation": "Use modern cryptographic algorithms such as bcrypt, Argon2, or PBKDF2."
+  }
+]
